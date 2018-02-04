@@ -1,4 +1,4 @@
-package com.mercateo.ddd.applied.usecase
+package com.mercateo.ddd.applied.domain.usecase
 
 import com.mercateo.ddd.applied.domain.Account
 import com.mercateo.ddd.applied.domain.AccountCreationData

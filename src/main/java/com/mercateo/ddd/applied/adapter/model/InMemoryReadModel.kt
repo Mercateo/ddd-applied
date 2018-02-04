@@ -1,5 +1,6 @@
-package com.mercateo.ddd.applied
+package com.mercateo.ddd.applied.adapter.model
 
+import com.mercateo.ddd.applied.domain.ReadModel
 import com.mercateo.ddd.applied.domain.Account
 import com.mercateo.ddd.applied.domain.AccountCreatedEvent
 import com.mercateo.ddd.applied.domain.AccountHolder
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
 @Component
-class ReadModel {
+class InMemoryReadModel : ReadModel {
 
     private data class MutableAccount(val accountId: AccountId, val holder: AccountHolder, val balance: BigDecimal = BigDecimal.ZERO)
 
@@ -29,10 +30,9 @@ class ReadModel {
         }
     }
 
-    fun accountById(id: AccountId): Account? = accounts[id]?.let(this::map)
+    override fun accountById(id: AccountId): Account? = accounts[id]?.let(this::map)
 
-    fun getAccounts(): List<Account> = accounts.values.map(this::map)
+    override fun getAccounts(): List<Account> = accounts.values.map(this::map)
 
     private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder)
-
 }

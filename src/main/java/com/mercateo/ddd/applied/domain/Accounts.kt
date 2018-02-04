@@ -1,7 +1,5 @@
 package com.mercateo.ddd.applied.domain
 
-import com.mercateo.ddd.applied.EventHandler
-import com.mercateo.ddd.applied.ReadModel
 import io.vavr.control.Either
 import io.vavr.kotlin.right
 import org.springframework.stereotype.Component

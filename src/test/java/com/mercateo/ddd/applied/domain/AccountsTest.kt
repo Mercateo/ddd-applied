@@ -1,7 +1,7 @@
 package com.mercateo.ddd.applied.domain
 
-import com.mercateo.ddd.applied.EventHandler
-import com.mercateo.ddd.applied.ReadModel
+import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -10,6 +10,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.math.BigDecimal
+import java.time.Instant
 
 @RunWith(MockitoJUnitRunner::class)
 class AccountsTest {
@@ -27,6 +28,7 @@ class AccountsTest {
     fun shouldOpenNewAccount() {
         val holder = AccountHolder("foo")
         val data = AccountCreationData(holder)
+        val startTime = Instant.now()
 
         val result = uut.open(data)
 
@@ -34,6 +36,14 @@ class AccountsTest {
         val account = result.get()
         assertThat(account.holder).isEqualTo(holder)
         assertThat(account.balance).isEqualTo(BigDecimal.ZERO)
+        val captor = argumentCaptor<AccountCreatedEvent>()
+        verify(eventHandler).publish(captor.capture())
+
+        val event = captor.firstValue
+        assertThat(event.accountId).isEqualTo(account.id)
+        assertThat(event.holder).isEqualTo(holder)
+        assertThat(event.timestamp).isAfterOrEqualTo(startTime)
+        assertThat(event.timestamp).isBeforeOrEqualTo(Instant.now())
     }
 
     @Test
