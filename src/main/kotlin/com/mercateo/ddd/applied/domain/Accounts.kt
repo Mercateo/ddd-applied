@@ -3,6 +3,7 @@ package com.mercateo.ddd.applied.domain
 import com.mercateo.ddd.applied.EventHandler
 import com.mercateo.ddd.applied.ReadModel
 import io.vavr.control.Either
+import io.vavr.kotlin.right
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.Instant
@@ -22,7 +23,7 @@ class Accounts(private val eventHandler: EventHandler, private val readModel: Re
     }
 
     fun wrapAccount(account: Account): Either<Failure, Account> {
-        return Either.right(account)
+        return right(account)
     }
 
     fun getAll(): List<Account> {

@@ -41,12 +41,6 @@ jacocoTestReport {
     }
 }
 
-/*dependencyManagement {
-    imports {
-        mavenBom "io.projectreactor:reactor-bom:Bismuth-RELEASE"
-    }
-}*/
-
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.jetbrains.kotlin:kotlin-stdlib"
@@ -54,9 +48,9 @@ dependencies {
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4"
     compile "io.vavr:vavr-kotlin:0.9.2"
     compile 'io.github.microutils:kotlin-logging:1.4.9'
-    testCompile "org.jetbrains.kotlin:kotlin-test"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit"
     testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "com.nhaarman:mockito-kotlin:1.5.0"
+    testCompile "org.assertj:assertj-core:3.9.0"
 }
 
 compileKotlin {
