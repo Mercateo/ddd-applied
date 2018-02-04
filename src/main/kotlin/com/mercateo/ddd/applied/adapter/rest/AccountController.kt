@@ -2,16 +2,14 @@ package com.mercateo.ddd.applied.adapter.rest
 
 import com.mercateo.ddd.applied.domain.Account
 import com.mercateo.ddd.applied.domain.AccountCreationData
+import com.mercateo.ddd.applied.domain.AccountId
 import com.mercateo.ddd.applied.domain.Accounts
 import com.mercateo.ddd.applied.usecase.OpenAccount
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RequestBody
-
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @RestController
@@ -35,5 +33,16 @@ class AccountController(val openAccount: OpenAccount, val accounts: Accounts) {
     @RequestMapping(method = [RequestMethod.GET])
     fun getAccounts(): ResponseEntity<List<Account>> {
         return accounts.getAll().let { ResponseEntity.ok(it) }
+    }
+
+    @RequestMapping("/{accountId}", method = [RequestMethod.GET])
+    fun getAccount(@PathVariable("accountId") accountIdString: String): ResponseEntity<Account> {
+        val accountId = AccountId(UUID.fromString(accountIdString))
+
+        return accounts.byId(accountId)
+                .fold(
+                        { ResponseEntity.notFound().build() },
+                        { ResponseEntity.ok(it) }
+                )
     }
 }

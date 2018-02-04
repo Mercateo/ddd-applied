@@ -43,11 +43,12 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.jetbrains.kotlin:kotlin-stdlib"
     compile "org.jetbrains.kotlin:kotlin-reflect"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4"
     compile "io.vavr:vavr-kotlin:0.9.2"
     compile 'io.github.microutils:kotlin-logging:1.4.9'
     testCompile "org.jetbrains.kotlin:kotlin-test"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
 }
 
 compileKotlin {
