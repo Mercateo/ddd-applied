@@ -1,6 +1,8 @@
 package com.mercateo.ddd.applied.adapter.rest
 
+import com.mercateo.ddd.applied.domain.Account
 import com.mercateo.ddd.applied.domain.AccountCreationData
+import com.mercateo.ddd.applied.domain.Accounts
 import com.mercateo.ddd.applied.usecase.OpenAccount
 import mu.KLogging
 import org.springframework.http.HttpStatus
@@ -13,11 +15,12 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-class AccountController(val openAccount: OpenAccount) {
+@RequestMapping("/accounts")
+class AccountController(val openAccount: OpenAccount, val accounts: Accounts) {
 
     companion object : KLogging()
 
-    @RequestMapping("/accounts", method = [RequestMethod.POST])
+    @RequestMapping(method = [RequestMethod.POST])
     fun createAccount(@RequestBody data: AccountCreationData): ResponseEntity<Unit> {
         return openAccount
                 .execute(data)
@@ -27,5 +30,10 @@ class AccountController(val openAccount: OpenAccount) {
                         { ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() },
                         { ResponseEntity.ok().build() }
                 )
+    }
+
+    @RequestMapping(method = [RequestMethod.GET])
+    fun getAccounts(): ResponseEntity<List<Account>> {
+        return accounts.getAll().let { ResponseEntity.ok(it) }
     }
 }

@@ -15,7 +15,7 @@ buildscript {
 }
 
 plugins {
-  id 'com.github.kt3k.coveralls' version '2.8.2'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 apply plugin: 'kotlin'
@@ -32,6 +32,12 @@ repositories {
 jacoco {
     toolVersion = "0.8.0"
 }
+
+/*dependencyManagement {
+    imports {
+        mavenBom "io.projectreactor:reactor-bom:Bismuth-RELEASE"
+    }
+}*/
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"

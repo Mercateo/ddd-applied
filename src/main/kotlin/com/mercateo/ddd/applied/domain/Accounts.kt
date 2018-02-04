@@ -1,14 +1,18 @@
 package com.mercateo.ddd.applied.domain
 
+import com.mercateo.ddd.applied.EventHandler
 import com.mercateo.ddd.applied.ReadModel
 import io.vavr.control.Either
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import java.time.Instant
 
 @Component
-class Accounts(private val readModel: ReadModel) {
+class Accounts(private val eventHandler: EventHandler, private val readModel: ReadModel) {
     fun open(creationData: AccountCreationData): Either<Failure, Account> {
         val accountId = AccountId()
+
+        eventHandler.publish(AccountCreatedEvent(accountId = accountId, holder = creationData.holder))
 
         return Either.right(Account(id = accountId, balance = BigDecimal(0), holder = creationData.holder))
     }
@@ -20,6 +24,10 @@ class Accounts(private val readModel: ReadModel) {
     fun wrapAccount(account: Account): Either<Failure, Account> {
         return Either.right(account)
     }
+
+    fun getAll(): List<Account> {
+        return readModel.getAccounts()
+    }
 }
 
 class Failure {
@@ -27,3 +35,9 @@ class Failure {
 }
 
 data class AccountCreationData(val holder: AccountHolder)
+
+data class AccountCreatedEvent(val accountId: AccountId, val holder: AccountHolder) : Event()
+
+abstract class Event {
+    val timestamp = Instant.now()
+}
