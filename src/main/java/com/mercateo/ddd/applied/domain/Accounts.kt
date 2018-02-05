@@ -33,9 +33,14 @@ class Failure {
 
 }
 
-data class AccountCreationData(val holder: AccountHolder)
+data class AccountCreationData(
+        val holder: AccountHolder
+)
 
-data class AccountCreatedEvent(val accountId: AccountId, val holder: AccountHolder) : Event()
+data class AccountCreatedEvent(
+        val accountId: AccountId,
+        val holder: AccountHolder
+) : Event()
 
 abstract class Event {
     val timestamp = Instant.now()
