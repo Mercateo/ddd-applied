@@ -9,6 +9,7 @@ import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.*
 
 
@@ -26,7 +27,11 @@ class AccountController(val openAccount: OpenAccount, val accounts: Accounts) {
                 .peekLeft { logger.info { "failure: $it" } }
                 .fold(
                         { ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() },
-                        { ResponseEntity.ok().build() }
+                        {
+                            val uri = ServletUriComponentsBuilder.fromCurrentRequest().path(
+                                    "/{id}").buildAndExpand(it.id.id).toUri();
+                            ResponseEntity.created(uri).build()
+                        }
                 )
     }
 
