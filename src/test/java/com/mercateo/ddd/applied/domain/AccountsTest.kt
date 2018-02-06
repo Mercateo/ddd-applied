@@ -30,10 +30,8 @@ class AccountsTest {
         val data = AccountCreationData(holder)
         val startTime = Instant.now()
 
-        val result = uut.open(data)
+        val account = uut.create(data)
 
-        assertThat(result).isNotEmpty()
-        val account = result.get()
         assertThat(account.holder).isEqualTo(holder)
         assertThat(account.balance).isEqualTo(BigDecimal.ZERO)
         val captor = argumentCaptor<AccountCreatedEvent>()
@@ -50,8 +48,7 @@ class AccountsTest {
     fun shouldReturnFailureForUnknownId() {
         val result = uut.byId(AccountId())
 
-        assertThat(result).isEmpty()
-        assertThat(result.left).isNotNull()
+        assertThat(result).isNull()
     }
 
     @Test
@@ -62,8 +59,8 @@ class AccountsTest {
 
         val result = uut.byId(accountId)
 
-        assertThat(result).isNotEmpty()
-        assertThat(result.get()).isSameAs(account)
+        assertThat(result).isNotNull()
+        assertThat(result).isSameAs(account)
     }
 
     @Test

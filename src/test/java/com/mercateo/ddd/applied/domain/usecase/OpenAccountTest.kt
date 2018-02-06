@@ -26,7 +26,7 @@ class OpenAccountTest {
         val holder = AccountHolder("foo")
         val data = AccountCreationData(holder)
         val account = Account(AccountId(), BigDecimal.ZERO, holder)
-        whenever(accounts.open(data)).thenReturn(right(account))
+        whenever(accounts.create(data)).thenReturn(account)
 
         val result = uut.execute(data)
 

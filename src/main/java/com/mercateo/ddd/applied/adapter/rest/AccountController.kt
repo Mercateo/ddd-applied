@@ -45,9 +45,7 @@ class AccountController(val openAccount: OpenAccount, val accounts: Accounts) {
         val accountId = AccountId(UUID.fromString(accountIdString))
 
         return accounts.byId(accountId)
-                .fold(
-                        { ResponseEntity.notFound().build() },
-                        { ResponseEntity.ok(it) }
-                )
+                ?.let { ResponseEntity.ok(it) }
+                ?: ResponseEntity.notFound().build()
     }
 }
