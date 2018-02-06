@@ -4,7 +4,7 @@ import com.mercateo.ddd.applied.domain.Account
 import com.mercateo.ddd.applied.domain.AccountCreationData
 import com.mercateo.ddd.applied.domain.AccountId
 import com.mercateo.ddd.applied.domain.Accounts
-import com.mercateo.ddd.applied.domain.usecase.OpenAccount
+import com.mercateo.ddd.applied.commands.OpenAccount
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

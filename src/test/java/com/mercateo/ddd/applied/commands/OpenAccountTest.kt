@@ -1,8 +1,7 @@
-package com.mercateo.ddd.applied.domain.usecase
+package com.mercateo.ddd.applied.commands
 
 import com.mercateo.ddd.applied.domain.*
 import com.nhaarman.mockito_kotlin.whenever
-import io.vavr.kotlin.right
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
