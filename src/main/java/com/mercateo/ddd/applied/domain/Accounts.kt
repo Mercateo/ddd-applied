@@ -1,7 +1,5 @@
 package com.mercateo.ddd.applied.domain
 
-import io.vavr.control.Either
-import io.vavr.kotlin.right
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
@@ -12,7 +10,12 @@ class Accounts(private val eventHandler: EventHandler, private val readModel: Re
 
         eventHandler.publish(AccountCreatedEvent(accountId = accountId, holder = creationData.holder))
 
-        return Account(id = accountId, balance = BigDecimal(0), holder = creationData.holder)
+        return Account(
+                id = accountId,
+                balance = BigDecimal(0),
+                holder = creationData.holder,
+                eventHandler = eventHandler,
+                readModel = readModel)
     }
 
     fun byId(accountId: AccountId): Account? {

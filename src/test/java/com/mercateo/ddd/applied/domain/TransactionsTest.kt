@@ -21,13 +21,16 @@ class TransactionsTest {
     @Mock
     private lateinit var eventHandler: EventHandler
 
+    @Mock
+    private lateinit var readModel: ReadModel
+
     @InjectMocks
     private lateinit var uut: Transactions
 
     @Test
     fun shouldCreateTransaction() {
-        val sourceAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("source"))
-        val targetAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("target"))
+        val sourceAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("source"), eventHandler, readModel)
+        val targetAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("target"), eventHandler, readModel)
         whenever(accounts.byId(sourceAccount.id)).thenReturn(sourceAccount)
         whenever(accounts.byId(targetAccount.id)).thenReturn(targetAccount)
 

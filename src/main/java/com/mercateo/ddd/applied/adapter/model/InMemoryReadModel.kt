@@ -1,23 +1,21 @@
 package com.mercateo.ddd.applied.adapter.model
 
-import com.mercateo.ddd.applied.domain.ReadModel
-import com.mercateo.ddd.applied.domain.Account
-import com.mercateo.ddd.applied.domain.AccountCreatedEvent
-import com.mercateo.ddd.applied.domain.AccountHolder
-import com.mercateo.ddd.applied.domain.AccountId
+import com.mercateo.ddd.applied.domain.*
 import mu.KLogging
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
 @Component
-class InMemoryReadModel : ReadModel {
+class InMemoryReadModel(private val eventHandler: EventHandler) : ReadModel {
 
-    private data class MutableAccount(val accountId: AccountId, val holder: AccountHolder, val balance: BigDecimal = BigDecimal.ZERO)
+    companion object : KLogging()
+
+    private data class MutableAccount(val accountId: AccountId, val holder: AccountHolder, var balance: BigDecimal = BigDecimal.ZERO)
 
     private val accounts = mutableMapOf<AccountId, MutableAccount>()
 
-    companion object : KLogging()
+    private val transactions = mutableMapOf<TransactionId, Transaction>()
 
     @EventListener
     fun eventReceiver(event: Any) {
@@ -27,6 +25,12 @@ class InMemoryReadModel : ReadModel {
             is AccountCreatedEvent -> {
                 accounts.put(event.accountId, MutableAccount(accountId = event.accountId, holder = event.holder))
             }
+            is TransactionCreatedEvent -> {
+                transactions[event.transactionId] = Transaction(event.transactionId, event.sourceAccountId, event.targetAccountId, event.amount)
+
+                accounts[event.sourceAccountId]!!.balance += event.amount
+                accounts[event.targetAccountId]!!.balance += event.amount
+            }
         }
     }
 
@@ -34,5 +38,5 @@ class InMemoryReadModel : ReadModel {
 
     override fun getAccounts(): List<Account> = accounts.values.map(this::map)
 
-    private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder)
+    private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder, eventHandler, this)
 }

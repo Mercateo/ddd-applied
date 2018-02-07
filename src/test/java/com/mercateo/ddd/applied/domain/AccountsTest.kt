@@ -54,7 +54,8 @@ class AccountsTest {
     @Test
     fun shouldReturnAccountById() {
         val accountId = AccountId()
-        val account = Account(id = accountId, balance = BigDecimal.ZERO, holder = AccountHolder("foo"))
+        val account = Account(id = accountId, balance = BigDecimal.ZERO, holder = AccountHolder("foo"),
+                eventHandler = eventHandler, readModel = readModel)
         whenever(readModel.accountById(accountId)).thenReturn(account)
 
         val result = uut.byId(accountId)
@@ -66,8 +67,8 @@ class AccountsTest {
     @Test
     fun shouldGetListOfAllAccounts() {
         val accounts = listOf(
-                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("foo")),
-                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("bar"))
+                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("foo"), eventHandler = eventHandler, readModel = readModel),
+                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("bar"), eventHandler = eventHandler, readModel = readModel)
         )
         whenever(readModel.getAccounts()).thenReturn(accounts)
 

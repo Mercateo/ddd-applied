@@ -15,16 +15,22 @@ import java.math.BigDecimal
 class OpenAccountTest {
 
     @Mock
-    lateinit var accounts: Accounts
+    private lateinit var accounts: Accounts
+
+    @Mock
+    private lateinit var eventHandler: EventHandler
+
+    @Mock
+    private lateinit var readModel: ReadModel
 
     @InjectMocks
-    lateinit var uut: OpenAccount
+    private lateinit var uut: OpenAccount
 
     @Test
     fun shouldOpenAccount() {
         val holder = AccountHolder("foo")
         val data = AccountCreationData(holder)
-        val account = Account(AccountId(), BigDecimal.ZERO, holder)
+        val account = Account(AccountId(), BigDecimal.ZERO, holder, eventHandler, readModel)
         whenever(accounts.create(data)).thenReturn(account)
 
         val result = uut.execute(data)
