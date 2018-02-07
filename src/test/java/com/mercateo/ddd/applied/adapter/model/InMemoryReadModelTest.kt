@@ -1,17 +1,19 @@
 package com.mercateo.ddd.applied.adapter.model
 
-import com.mercateo.ddd.applied.domain.AccountCreatedEvent
-import com.mercateo.ddd.applied.domain.AccountHolder
-import com.mercateo.ddd.applied.domain.AccountId
+import com.mercateo.ddd.applied.domain.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
+import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.math.BigDecimal
 
 @RunWith(MockitoJUnitRunner::class)
 class InMemoryReadModelTest {
+
+    @Mock
+    private lateinit var eventHandler: EventHandler
 
     @InjectMocks
     lateinit var uut: InMemoryReadModel
