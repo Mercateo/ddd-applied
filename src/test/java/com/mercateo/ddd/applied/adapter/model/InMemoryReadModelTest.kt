@@ -46,4 +46,37 @@ class InMemoryReadModelTest {
         assertThat(result?.balance).isEqualTo(BigDecimal.ZERO)
         assertThat(result?.holder).isEqualTo(holder)
     }
+
+    @Test
+    fun shouldReturnTransactionById() {
+        val transactionId = TransactionId()
+        val sourceAccountId = AccountId()
+        uut.eventReceiver(AccountCreatedEvent(sourceAccountId, AccountHolder("source")))
+        val targetAccountId = AccountId()
+        uut.eventReceiver(AccountCreatedEvent(targetAccountId, AccountHolder("target")))
+        uut.eventReceiver(TransactionCreatedEvent(transactionId, sourceAccountId, targetAccountId, BigDecimal(123)))
+
+        val result = uut.transactionById(transactionId)
+
+        assertThat(result).isNotNull()
+
+        assertThat(result!!.id).isEqualTo(transactionId)
+        assertThat(result.sourceAccountId).isEqualTo(sourceAccountId)
+        assertThat(result.targetAccountId).isEqualTo(targetAccountId)
+        assertThat(result.amount).isEqualTo(BigDecimal(123))
+    }
+
+    @Test
+    fun shouldApplyTransaction() {
+        val transactionId = TransactionId()
+        val sourceAccountId = AccountId()
+        uut.eventReceiver(AccountCreatedEvent(sourceAccountId, AccountHolder("source")))
+        val targetAccountId = AccountId()
+        uut.eventReceiver(AccountCreatedEvent(targetAccountId, AccountHolder("target")))
+
+        uut.eventReceiver(TransactionCreatedEvent(transactionId, sourceAccountId, targetAccountId, BigDecimal(123)))
+
+        assertThat(uut.accountById(sourceAccountId)?.balance).isEqualTo(BigDecimal(-123))
+        assertThat(uut.accountById(targetAccountId)?.balance).isEqualTo(BigDecimal(123))
+    }
 }

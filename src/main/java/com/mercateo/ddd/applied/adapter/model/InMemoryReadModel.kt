@@ -28,7 +28,7 @@ class InMemoryReadModel(private val eventHandler: EventHandler) : ReadModel {
             is TransactionCreatedEvent -> {
                 transactions[event.transactionId] = Transaction(event.transactionId, event.sourceAccountId, event.targetAccountId, event.amount)
 
-                accounts[event.sourceAccountId]!!.balance += event.amount
+                accounts[event.sourceAccountId]!!.balance -= event.amount
                 accounts[event.targetAccountId]!!.balance += event.amount
             }
         }
@@ -39,4 +39,6 @@ class InMemoryReadModel(private val eventHandler: EventHandler) : ReadModel {
     override fun getAccounts(): List<Account> = accounts.values.map(this::map)
 
     private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder, eventHandler, this)
+
+    override fun transactionById(id: TransactionId) = transactions[id]
 }
