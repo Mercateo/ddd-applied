@@ -13,6 +13,6 @@ class ApplicationLocalEventHandler(private val eventPublisher: ApplicationEventP
     override fun <T> publish(data: T) {
         logger.info("publish({})", data)
 
-        eventPublisher.publishEvent(data)
+        eventPublisher.publishEvent(data as Any)
     }
 }

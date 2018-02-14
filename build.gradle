@@ -43,6 +43,7 @@ jacocoTestReport {
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework:spring-tx"
     compile "org.jetbrains.kotlin:kotlin-stdlib"
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4"
@@ -53,11 +54,13 @@ dependencies {
     testCompile "org.assertj:assertj-core:3.9.0"
 }
 
+sourceCompatibility = 1.8
 compileKotlin {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
     kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
         jvmTarget = "1.8"
     }
 }
