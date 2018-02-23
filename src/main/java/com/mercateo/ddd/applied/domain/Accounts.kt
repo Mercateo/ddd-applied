@@ -1,23 +1,10 @@
 package com.mercateo.ddd.applied.domain
 
+import com.mercateo.ddd.applied.read.ReadModel
 import org.springframework.stereotype.Component
-import java.math.BigDecimal
 
 @Component
 class Accounts(private val eventHandler: EventHandler, private val readModel: ReadModel) {
-    fun create(creationData: AccountCreationData): Account {
-        val accountId = AccountId()
-
-        eventHandler.publish(AccountCreatedEvent(accountId = accountId, holder = creationData.holder))
-
-        return Account(
-                id = accountId,
-                balance = BigDecimal(0),
-                holder = creationData.holder,
-                eventHandler = eventHandler,
-                readModel = readModel)
-    }
-
     fun byId(accountId: AccountId): Account? {
         return readModel.accountById(accountId)
     }

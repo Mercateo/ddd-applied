@@ -1,5 +1,6 @@
 package com.mercateo.ddd.applied.domain
 
+import com.mercateo.ddd.applied.read.ReadModel
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
@@ -7,13 +8,12 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.math.BigDecimal
 
 @RunWith(MockitoJUnitRunner::class)
-class TransactionsTest {
+class TransactionTest {
 
     @Mock
     private lateinit var accounts: Accounts
@@ -24,17 +24,15 @@ class TransactionsTest {
     @Mock
     private lateinit var readModel: ReadModel
 
-    @InjectMocks
-    private lateinit var uut: Transactions
 
     @Test
     fun shouldCreateTransaction() {
-        val sourceAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("source"), eventHandler, readModel)
-        val targetAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("target"), eventHandler, readModel)
+        val sourceAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("source"), eventHandler)
+        val targetAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("target"), eventHandler)
         whenever(accounts.byId(sourceAccount.id)).thenReturn(sourceAccount)
         whenever(accounts.byId(targetAccount.id)).thenReturn(targetAccount)
 
-        val result = uut.create(TransactionCreationData(sourceAccountId = sourceAccount.id, targetAccountId = targetAccount.id, amount = BigDecimal(10)))
+        val result = Transaction.create(TransactionCreationData(sourceAccountId = sourceAccount.id, targetAccountId = targetAccount.id, amount = BigDecimal(10)), accounts, eventHandler)
 
         assertThat(result).isNotEmpty
         val transaction = result.get()
@@ -49,12 +47,12 @@ class TransactionsTest {
 
     @Test
     fun shouldAccumulateFailuresWhenCreatingTransaction() {
-        val result = uut.create(TransactionCreationData(sourceAccountId = AccountId(), targetAccountId = AccountId(), amount = BigDecimal(-10)))
+        val result = Transaction.create(TransactionCreationData(sourceAccountId = AccountId(), targetAccountId = AccountId(), amount = BigDecimal(-10)), accounts, eventHandler)
 
         assertThat(result).isEmpty()
 
         val failure = result.left
-        assertThat(failure.causes).containsExactlyInAnyOrder(*TransactionCause.values())
+        assertThat(failure.causes).containsExactlyInAnyOrder(*TransactionErrorCause.values().copyOfRange(0, 3))
 
         verifyZeroInteractions(eventHandler)
     }

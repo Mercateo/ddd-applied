@@ -1,6 +1,8 @@
 package com.mercateo.ddd.applied.adapter.model
 
+
 import com.mercateo.ddd.applied.domain.*
+import com.mercateo.ddd.applied.read.ReadModel
 import mu.KLogging
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
@@ -38,7 +40,7 @@ class InMemoryReadModel(private val eventHandler: EventHandler) : ReadModel {
 
     override fun getAccounts(): List<Account> = accounts.values.map(this::map)
 
-    private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder, eventHandler, this)
+    private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder, eventHandler)
 
     override fun transactionById(id: TransactionId) = transactions[id]
 }
