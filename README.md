@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wuan/ddd-applied.svg?branch=master)](https://travis-ci.org/wuan/ddd-applied) [![Coverage Status](https://coveralls.io/repos/github/wuan/ddd-applied/badge.svg?branch=master)](https://coveralls.io/github/wuan/ddd-applied?branch=master)
+[![Build Status](https://travis-ci.org/Mercateo/ddd-applied.svg?branch=master)](https://travis-ci.org/Mercateo/ddd-applied) [![Coverage Status](https://coveralls.io/repos/github/Mercateo/ddd-applied/badge.svg?branch=master)](https://coveralls.io/github/Mercateo/ddd-applied?branch=master)
 
 # ddd-applied-demo
 
