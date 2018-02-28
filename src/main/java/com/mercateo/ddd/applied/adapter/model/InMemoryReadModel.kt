@@ -20,7 +20,7 @@ class InMemoryReadModel(private val eventHandler: EventHandler) : ReadModel {
     private val transactions = mutableMapOf<TransactionId, Transaction>()
 
     @EventListener
-    fun eventReceiver(event: Any) {
+    fun eventReceiver(event: Event) {
         logger.info("eventReceiver({})", event)
 
         when (event) {

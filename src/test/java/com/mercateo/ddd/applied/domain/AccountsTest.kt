@@ -1,6 +1,6 @@
 package com.mercateo.ddd.applied.domain
 
-import com.mercateo.ddd.applied.read.ReadModel
+import com.mercateo.ddd.applied.adapter.pullviews.AccountsPullView
 import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -17,7 +17,7 @@ class AccountsTest {
     lateinit var eventHandler: EventHandler
 
     @Mock
-    lateinit var readModel: ReadModel
+    lateinit var pullView: AccountsPullView
 
     @InjectMocks
     lateinit var uut: Accounts
@@ -34,24 +34,11 @@ class AccountsTest {
         val accountId = AccountId()
         val account = Account(id = accountId, balance = BigDecimal.ZERO, holder = AccountHolder("foo"),
                 eventHandler = eventHandler)
-        whenever(readModel.accountById(accountId)).thenReturn(account)
+        whenever(pullView.getAccount(accountId)).thenReturn(account)
 
         val result = uut.byId(accountId)
 
         assertThat(result).isNotNull()
         assertThat(result).isSameAs(account)
-    }
-
-    @Test
-    fun shouldGetListOfAllAccounts() {
-        val accounts = listOf(
-                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("foo"), eventHandler = eventHandler),
-                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("bar"), eventHandler = eventHandler)
-        )
-        whenever(readModel.getAccounts()).thenReturn(accounts)
-
-        val result = uut.getAll()
-
-        assertThat(result).extracting("holder").extracting("name").containsExactlyInAnyOrder("foo", "bar")
     }
 }

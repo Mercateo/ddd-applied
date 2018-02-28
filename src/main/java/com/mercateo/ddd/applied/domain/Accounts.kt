@@ -1,25 +1,13 @@
 package com.mercateo.ddd.applied.domain
 
-import com.mercateo.ddd.applied.read.ReadModel
+import com.mercateo.ddd.applied.adapter.pullviews.AccountsPullView
 import org.springframework.stereotype.Component
 
 @Component
-class Accounts(private val eventHandler: EventHandler, private val readModel: ReadModel) {
+class Accounts(private val eventHandler: EventHandler, private val pullView: AccountsPullView) {
     fun byId(accountId: AccountId): Account? {
-        return readModel.accountById(accountId)
-    }
-
-    fun getAll(): List<Account> {
-        return readModel.getAccounts()
+        return pullView.getAccount(accountId)
     }
 }
 
-data class AccountCreationData(
-        val holder: AccountHolder
-)
-
-data class AccountCreatedEvent(
-        val accountId: AccountId,
-        val holder: AccountHolder
-) : Event()
 

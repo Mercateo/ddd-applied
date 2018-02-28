@@ -1,6 +1,5 @@
 package com.mercateo.ddd.applied.domain
 
-import com.mercateo.ddd.applied.read.ReadModel
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -18,9 +17,6 @@ class AccountTest {
 
     @Mock
     private lateinit var eventHandler: EventHandler
-
-    @Mock
-    private lateinit var readModel: ReadModel
 
     @Mock
     private lateinit var accounts: Accounts

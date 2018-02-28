@@ -1,10 +1,10 @@
 package com.mercateo.ddd.applied.adapter.rest
 
+import com.mercateo.ddd.applied.commands.OpenAccount
 import com.mercateo.ddd.applied.domain.Account
 import com.mercateo.ddd.applied.domain.AccountCreationData
 import com.mercateo.ddd.applied.domain.AccountId
-import com.mercateo.ddd.applied.domain.Accounts
-import com.mercateo.ddd.applied.commands.OpenAccount
+import com.mercateo.ddd.applied.read.ReadModel
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,7 +15,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/accounts")
-class AccountController(val openAccount: OpenAccount, val accounts: Accounts) {
+class AccountController(val openAccount: OpenAccount, val readModel: ReadModel) {
 
     companion object : KLogging()
 
@@ -29,7 +29,7 @@ class AccountController(val openAccount: OpenAccount, val accounts: Accounts) {
                         { ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build() },
                         {
                             val uri = ServletUriComponentsBuilder.fromCurrentRequest().path(
-                                    "/{id}").buildAndExpand(it.id.id).toUri();
+                                    "/{id}").buildAndExpand(it.id.id).toUri()
                             ResponseEntity.created(uri).build()
                         }
                 )
@@ -37,14 +37,14 @@ class AccountController(val openAccount: OpenAccount, val accounts: Accounts) {
 
     @RequestMapping(method = [RequestMethod.GET])
     fun getAccounts(): ResponseEntity<List<Account>> {
-        return accounts.getAll().let { ResponseEntity.ok(it) }
+        return readModel.getAccounts().let { ResponseEntity.ok(it) }
     }
 
     @RequestMapping("/{accountId}", method = [RequestMethod.GET])
     fun getAccount(@PathVariable("accountId") accountIdString: String): ResponseEntity<Account> {
         val accountId = AccountId(UUID.fromString(accountIdString))
 
-        return accounts.byId(accountId)
+        return readModel.accountById(accountId)
                 ?.let { ResponseEntity.ok(it) }
                 ?: ResponseEntity.notFound().build()
     }

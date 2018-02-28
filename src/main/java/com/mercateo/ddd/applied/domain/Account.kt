@@ -1,5 +1,6 @@
 package com.mercateo.ddd.applied.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.vavr.control.Either
 import java.math.BigDecimal
 import java.util.*
@@ -18,6 +19,7 @@ data class Account(
         val id: AccountId,
         var balance: BigDecimal,
         val holder: AccountHolder,
+        @JsonIgnore
         val eventHandler: EventHandler
 ) {
     private val transactions = LinkedList<Transaction>()
@@ -65,4 +67,14 @@ data class Account(
 
     }
 }
+
+data class AccountCreationData(
+        val holder: AccountHolder
+)
+
+data class AccountCreatedEvent(
+        val accountId: AccountId,
+        val holder: AccountHolder
+) : Event()
+
 
