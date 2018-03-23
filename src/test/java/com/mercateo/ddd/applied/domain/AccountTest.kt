@@ -1,10 +1,10 @@
 package com.mercateo.ddd.applied.domain
 
+import com.mercateo.ddd.applied.model.ValidationModel
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.data.Offset
 import org.assertj.core.data.Percentage
 import org.junit.Before
 import org.junit.Test
@@ -20,20 +20,20 @@ class AccountTest {
     private lateinit var eventHandler: EventHandler
 
     @Mock
-    private lateinit var readModel: ReadModel
+    private lateinit var validationModel: ValidationModel
 
     private lateinit var uut: Account
 
     @Before
     fun setUp() {
-        uut = Account(AccountId(), BigDecimal(123.12), AccountHolder("holder"), eventHandler, readModel)
+        uut = Account(AccountId(), BigDecimal(123.12), AccountHolder("holder"), eventHandler, validationModel)
     }
 
     @Test
     fun shouldUpdateAccountWithTransfer() {
         val targetAccountId = AccountId()
-        whenever(readModel.accountById(targetAccountId)).thenReturn(
-                Account(targetAccountId, BigDecimal.ZERO, AccountHolder("target"), eventHandler, readModel))
+        whenever(validationModel.accountById(targetAccountId)).thenReturn(
+                Account(targetAccountId, BigDecimal.ZERO, AccountHolder("target"), eventHandler, validationModel))
 
         val result = uut.transfer(BigDecimal(33.12), targetAccountId)
 

@@ -1,5 +1,7 @@
 package com.mercateo.ddd.applied.domain
 
+import com.mercateo.ddd.applied.model.ReadModel
+import com.mercateo.ddd.applied.model.ValidationModel
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -17,6 +19,9 @@ class AccountsTest {
 
     @Mock
     lateinit var eventHandler: EventHandler
+
+    @Mock
+    lateinit var validationModel: ValidationModel
 
     @Mock
     lateinit var readModel: ReadModel
@@ -55,7 +60,7 @@ class AccountsTest {
     fun shouldReturnAccountById() {
         val accountId = AccountId()
         val account = Account(id = accountId, balance = BigDecimal.ZERO, holder = AccountHolder("foo"),
-                eventHandler = eventHandler, readModel = readModel)
+                eventHandler = eventHandler, validationModel = validationModel)
         whenever(readModel.accountById(accountId)).thenReturn(account)
 
         val result = uut.byId(accountId)
@@ -67,10 +72,10 @@ class AccountsTest {
     @Test
     fun shouldGetListOfAllAccounts() {
         val accounts = listOf(
-                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("foo"), eventHandler = eventHandler, readModel = readModel),
-                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("bar"), eventHandler = eventHandler, readModel = readModel)
+                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("foo"), eventHandler = eventHandler, validationModel = validationModel),
+                Account(id = AccountId(), balance = BigDecimal.ZERO, holder = AccountHolder("bar"), eventHandler = eventHandler, validationModel = validationModel)
         )
-        whenever(readModel.getAccounts()).thenReturn(accounts)
+        whenever(readModel.accounts()).thenReturn(accounts)
 
         val result = uut.getAll()
 

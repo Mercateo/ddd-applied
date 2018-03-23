@@ -46,4 +46,4 @@ data class TransactionCreatedEvent(
         val sourceAccountId: AccountId,
         val targetAccountId: AccountId,
         val amount: BigDecimal
-) : Event()
+) : Event(sourceAccountId, targetAccountId)

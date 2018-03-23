@@ -1,44 +1,67 @@
 package com.mercateo.ddd.applied.adapter.model
 
 import com.mercateo.ddd.applied.domain.*
+import com.mercateo.ddd.applied.model.ReadModel
+import com.mercateo.ddd.applied.model.ValidationModel
 import mu.KLogging
-import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import javax.annotation.PostConstruct
 
 @Component
-class InMemoryReadModel(private val eventHandler: EventHandler) : ReadModel {
+class InMemoryReadModel(private val eventHandler: EventHandler, private val validationModel: ValidationModel) : ReadModel, EventReceiver {
 
     companion object : KLogging()
-
-    private data class MutableAccount(val accountId: AccountId, val holder: AccountHolder, var balance: BigDecimal = BigDecimal.ZERO)
 
     private val accounts = mutableMapOf<AccountId, MutableAccount>()
 
     private val transactions = mutableMapOf<TransactionId, Transaction>()
 
-    @EventListener
-    fun eventReceiver(event: Any) {
+    @PostConstruct
+    fun init() {
+        eventHandler.subscribe(this)
+    }
+
+    override fun accounts(): List<Account> {
+        return accounts.values.map(::map)
+    }
+
+    override fun accountById(id: AccountId): Account? {
+        return accounts[id]?.let(::map)
+    }
+
+    private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder, eventHandler, validationModel)
+
+    override fun transactions(): List<Transaction> {
+        return transactions.values.toList()
+    }
+
+    override fun transactionById(id: TransactionId): Transaction? {
+        return transactions[id]
+    }
+
+    override fun receive(event: Event) {
         logger.info("eventReceiver({})", event)
 
         when (event) {
             is AccountCreatedEvent -> {
-                accounts.put(event.accountId, MutableAccount(accountId = event.accountId, holder = event.holder))
+                accounts[event.accountId] = MutableAccount(event.accountId, event.holder, BigDecimal.ZERO)
             }
+
             is TransactionCreatedEvent -> {
                 transactions[event.transactionId] = Transaction(event.transactionId, event.sourceAccountId, event.targetAccountId, event.amount)
 
-                accounts[event.sourceAccountId]!!.balance -= event.amount
-                accounts[event.targetAccountId]!!.balance += event.amount
+                accounts[event.sourceAccountId]?.also { it.balance -= event.amount }
+                        ?: logger.warn { "no source account ${event.sourceAccountId}" }
+                accounts[event.targetAccountId]?.also { it.balance += event.amount }
+                        ?: logger.warn { "no target account ${event.targetAccountId}" }
             }
         }
     }
 
-    override fun accountById(id: AccountId): Account? = accounts[id]?.let(this::map)
-
-    override fun getAccounts(): List<Account> = accounts.values.map(this::map)
-
-    private fun map(account: MutableAccount): Account = Account(account.accountId, account.balance, account.holder, eventHandler, this)
-
-    override fun transactionById(id: TransactionId) = transactions[id]
+    private data class MutableAccount(
+            val accountId: AccountId,
+            val holder: AccountHolder,
+            var balance: BigDecimal = BigDecimal.ZERO)
 }
+

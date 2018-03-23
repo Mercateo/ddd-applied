@@ -1,10 +1,12 @@
 package com.mercateo.ddd.applied.domain
 
+import com.mercateo.ddd.applied.model.ReadModel
+import com.mercateo.ddd.applied.model.ValidationModel
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
 @Component
-class Accounts(private val eventHandler: EventHandler, private val readModel: ReadModel) {
+class Accounts(private val eventHandler: EventHandler, private val readModel: ReadModel, private val validationModel: ValidationModel) {
     fun create(creationData: AccountCreationData): Account {
         val accountId = AccountId()
 
@@ -15,7 +17,7 @@ class Accounts(private val eventHandler: EventHandler, private val readModel: Re
                 balance = BigDecimal(0),
                 holder = creationData.holder,
                 eventHandler = eventHandler,
-                readModel = readModel)
+                validationModel = validationModel)
     }
 
     fun byId(accountId: AccountId): Account? {
@@ -23,7 +25,7 @@ class Accounts(private val eventHandler: EventHandler, private val readModel: Re
     }
 
     fun getAll(): List<Account> {
-        return readModel.getAccounts()
+        return readModel.accounts()
     }
 }
 
@@ -34,5 +36,5 @@ data class AccountCreationData(
 data class AccountCreatedEvent(
         val accountId: AccountId,
         val holder: AccountHolder
-) : Event()
+) : Event(accountId)
 

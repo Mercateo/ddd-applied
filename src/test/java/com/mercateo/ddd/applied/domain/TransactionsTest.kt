@@ -1,5 +1,6 @@
 package com.mercateo.ddd.applied.domain
 
+import com.mercateo.ddd.applied.model.ValidationModel
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
@@ -22,15 +23,15 @@ class TransactionsTest {
     private lateinit var eventHandler: EventHandler
 
     @Mock
-    private lateinit var readModel: ReadModel
+    private lateinit var validationModel: ValidationModel
 
     @InjectMocks
     private lateinit var uut: Transactions
 
     @Test
     fun shouldCreateTransaction() {
-        val sourceAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("source"), eventHandler, readModel)
-        val targetAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("target"), eventHandler, readModel)
+        val sourceAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("source"), eventHandler, validationModel)
+        val targetAccount = Account(AccountId(), BigDecimal.ZERO, AccountHolder("target"), eventHandler, validationModel)
         whenever(accounts.byId(sourceAccount.id)).thenReturn(sourceAccount)
         whenever(accounts.byId(targetAccount.id)).thenReturn(targetAccount)
 

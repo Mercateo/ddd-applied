@@ -1,6 +1,7 @@
 package com.mercateo.ddd.applied.commands
 
 import com.mercateo.ddd.applied.domain.*
+import com.mercateo.ddd.applied.model.ValidationModel
 import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -21,7 +22,7 @@ class OpenAccountTest {
     private lateinit var eventHandler: EventHandler
 
     @Mock
-    private lateinit var readModel: ReadModel
+    private lateinit var validationModel: ValidationModel
 
     @InjectMocks
     private lateinit var uut: OpenAccount
@@ -30,7 +31,7 @@ class OpenAccountTest {
     fun shouldOpenAccount() {
         val holder = AccountHolder("foo")
         val data = AccountCreationData(holder)
-        val account = Account(AccountId(), BigDecimal.ZERO, holder, eventHandler, readModel)
+        val account = Account(AccountId(), BigDecimal.ZERO, holder, eventHandler, validationModel)
         whenever(accounts.create(data)).thenReturn(account)
 
         val result = uut.execute(data)
